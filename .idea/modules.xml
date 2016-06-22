@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MagickUI.iml" filepath="$PROJECT_DIR$/MagickUI.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/magikui/magikui.iml" filepath="$PROJECT_DIR$/magikui/magikui.iml" />
     </modules>
   </component>
 </project>

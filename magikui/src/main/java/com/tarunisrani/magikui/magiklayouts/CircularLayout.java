@@ -1,7 +1,6 @@
-package com.tarunisrani.magickui;
+package com.tarunisrani.magikui.magiklayouts;
 
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,7 +13,7 @@ import android.widget.FrameLayout;
 /**
  * Created by tarunisrani on 6/14/16.
  */
-@TargetApi(11)
+
 public class CircularLayout extends FrameLayout {
 
     private int radiusCircle = 0;
@@ -689,7 +688,7 @@ public class CircularLayout extends FrameLayout {
 
         public void initialize(){
 //            circlePaint.setColor(Color.WHITE);
-            circlePaint.setColor(Color.BLACK);
+            circlePaint.setColor(Color.TRANSPARENT);
             circlePaint.setStrokeWidth(widthCircularPath);
             circlePaint.setStyle(Paint.Style.STROKE);
 

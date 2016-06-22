@@ -1,4 +1,4 @@
-package com.tarunisrani.magickui;
+package com.tarunisrani.magikui.magiklayouts;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -200,20 +200,33 @@ public class TreeLayout extends FrameLayout {
         for (int i = 0; i < levels; i++) {
             int index = (int)Math.pow(2, i);
             int range = index;
-            xPos = centerX();
+//            xPos = centerX();
+            int childCount = 0;
+            int divider = range / 2;
             for(int j=index-1;j<index-1+range;j++) {
                 if(j<count) {
                     final View child = getChildAt(j);
                     if (child.getVisibility() != GONE) {
                         final LayoutParams lp = (LayoutParams) child.getLayoutParams();
 
-
                         final int width = child.getMeasuredWidth();
                         final int height = child.getMeasuredHeight();
 
                         rowHeight = Math.max(rowHeight, height + lp.bottomMargin);
 
-                        xPos -= i*width;
+                        ++childCount;
+
+                        if(childCount<=divider){
+                            xPos = centerX() - childCount*width;
+                        }
+                        else{
+                            xPos = centerX() + childCount*width;
+                        }
+
+
+
+
+
 
 //                        if (xPos + (lp.leftMargin + lp.rightMargin) + width > (right)) {
 //                            xPos = 0;

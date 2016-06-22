@@ -6,10 +6,11 @@
     android:background="#c3c3c3"
     tools:context="com.tarunisrani.magickui.MainActivity">
 
-    <com.tarunisrani.magickui.TreeLayout
+    <com.tarunisrani.magikui.magiklayouts.TreeLayout
         android:id="@+id/testLayout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true">
         <Button
             android:id="@+id/centerButton"
             android:layout_width="wrap_content"
@@ -40,5 +41,5 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Button 7"/>
-    </com.tarunisrani.magickui.TreeLayout>
+    </com.tarunisrani.magikui.magiklayouts.TreeLayout>
 </RelativeLayout>

@@ -4,6 +4,8 @@ import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.tarunisrani.magikui.magiklayouts.CircularLayout;
+
 public class MainActivity extends AppCompatActivity {
 
     CircularLayout cLayout;

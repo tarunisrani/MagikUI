@@ -1,4 +1,4 @@
-package com.tarunisrani.magickui;
+package com.tarunisrani.magikui.magiklayouts;
 
 import android.annotation.TargetApi;
 import android.content.Context;
