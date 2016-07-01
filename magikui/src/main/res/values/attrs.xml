@@ -2,7 +2,7 @@
 <resources>
     <declare-styleable name="TreeLayout">
         <!--<attr name="showText" format="boolean" />-->
-        <attr name="layoutType" format="enum">
+        <attr name="layoutType" format="integer">
             <enum name="condensed" value="0"/>
             <enum name="adjust" value="1"/>
         </attr>

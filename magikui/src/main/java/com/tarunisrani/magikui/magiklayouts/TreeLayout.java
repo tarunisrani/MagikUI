@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.tarunisrani.magikui.R;
@@ -105,10 +104,14 @@ public class TreeLayout extends FrameLayout {
 
         try {
 
-//            lType = a.getInteger(R.styleable.TreeLayout_layoutType, 0);
+            lType = a.getInteger(R.styleable.TreeLayout_layoutType, 0);
+//            String layoutType = a.getString(R.styleable.TreeLayout_layoutType);
+//            lType = layoutType!=null?layoutType.equals("adjust")?0:1:1;
+        } catch (Exception exp){
             String layoutType = a.getString(R.styleable.TreeLayout_layoutType);
             lType = layoutType!=null?layoutType.equals("adjust")?1:0:0;
-        } finally {
+        }
+        finally {
             a.recycle();
         }
 
@@ -243,8 +246,8 @@ public class TreeLayout extends FrameLayout {
             adjustLayout(changed, left, top, right, bottom);
         }
         else if(lType == CONDENSED){
-//            condensedLAyout(changed, left, top, right, bottom);
-            adjustLayout(changed, left, top, right, bottom);
+            condensedLAyout(changed, left, top, right, bottom);
+//            adjustLayout(changed, left, top, right, bottom);
         }
     }
 

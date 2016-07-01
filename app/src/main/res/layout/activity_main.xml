@@ -48,7 +48,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:text="3"/>
-        <!--<Button
+        <Button
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:text="4"/>
@@ -67,7 +67,7 @@
         <Button
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:text="8"/>-->
+            android:text="8"/>
 
         <!--<Button
             android:layout_width="50dp"
