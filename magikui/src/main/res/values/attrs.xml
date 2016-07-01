@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TreeLayout">
+        <!--<attr name="showText" format="boolean" />-->
+        <attr name="layoutType" format="enum">
+            <enum name="condensed" value="0"/>
+            <enum name="adjust" value="1"/>
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="CircularLayout">
+        <attr name="circularPathColor" format="color"/>
+    </declare-styleable>
+</resources>

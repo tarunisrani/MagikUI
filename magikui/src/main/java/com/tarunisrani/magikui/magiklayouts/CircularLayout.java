@@ -2,6 +2,7 @@ package com.tarunisrani.magikui.magiklayouts;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -9,6 +10,10 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import com.tarunisrani.magikui.R;
+
+//import com.tarunisrani.magikui.R;
 
 /**
  * Created by tarunisrani on 6/14/16.
@@ -22,7 +27,9 @@ public class CircularLayout extends FrameLayout {
     private int widthCircularPath = 0;
     private double startingOffsetAngle = 0.0;
     private double endAngle = 360.0;
-    double shiftangle = 0.0;
+    private double shiftangle = 0.0;
+
+    private int circularPathColor = Color.TRANSPARENT;
 
     private int xShift = 0;
     private int yShift = 0;
@@ -99,12 +106,33 @@ public class CircularLayout extends FrameLayout {
 
     public CircularLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initAttributes(attrs);
         initialize();
+
     }
 
     public CircularLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        initAttributes(attrs);
         initialize();
+
+    }
+
+    private void initAttributes(AttributeSet attrs){
+        TypedArray a = getContext().getTheme().obtainStyledAttributes(
+                attrs,
+                R.styleable.CircularLayout,
+                0, 0);
+
+        try {
+
+//            lType = a.getInteger(R.styleable.TreeLayout_layoutType, 0);
+            circularPathColor = a.getColor(R.styleable.CircularLayout_circularPathColor, Color.TRANSPARENT);
+
+        } finally {
+            a.recycle();
+        }
+
     }
 
     private int centerY(int offset){
@@ -688,7 +716,7 @@ public class CircularLayout extends FrameLayout {
 
         public void initialize(){
 //            circlePaint.setColor(Color.WHITE);
-            circlePaint.setColor(Color.TRANSPARENT);
+            circlePaint.setColor(circularPathColor);
             circlePaint.setStrokeWidth(widthCircularPath);
             circlePaint.setStyle(Paint.Style.STROKE);
 
