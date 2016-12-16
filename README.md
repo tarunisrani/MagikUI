@@ -8,13 +8,9 @@ It is very easy to use this library in your android project. Just add `compile '
 ### Usages
 
 #### CircularLayout
-CircularLayout is developed for scenarios where developer needs to arrange ui elements in a circular arrangement. The arrangement is further classified in 3 categories:
+CircularLayout is developed for scenarios where developer needs to arrange ui elements in a circular arrangement.
 
-* Full
-* Half (Upper-half/Lower-half)
-* Quarters (First/Second/Third/Fourth)
-
-By Default an element is added at the first position (0 index) for background circle 
+By Default first element is added to the center. 
 
 ##### How to use:
     <com.tarunisrani.magikui.magiklayouts.CircularLayout
@@ -115,7 +111,7 @@ ParagraphLayout is developed for scenarios where ui elements are required to be 
 
 
 #### TreeLayout
-TreeLayout is developed for scenarios where ui elements are required to be arranged tree fashion or in hirarchy. 
+TreeLayout is developed for scenarios where ui elements are required to be arranged tree fashion or in hierarchy. 
 
 
 ##### How to use:
