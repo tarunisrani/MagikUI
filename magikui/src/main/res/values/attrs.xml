@@ -6,16 +6,4 @@
             <enum name="adjust" value="1"/>
         </attr>
     </declare-styleable>
-    <declare-styleable name="CircularLayout">
-        <attr name="circularPathColor" format="color"/>
-        <attr name="circleType" format="integer">
-            <enum name="full" value="101"/>
-            <enum name="upper_half" value="102"/>
-            <enum name="lower_half" value="103"/>
-            <enum name="first_quarter" value="104"/>
-            <enum name="second_quarter" value="105"/>
-            <enum name="third_quarter" value="106"/>
-            <enum name="fourth_quarter" value="107"/>
-        </attr>
-    </declare-styleable>
 </resources>

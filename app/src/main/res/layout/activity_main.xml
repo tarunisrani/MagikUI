@@ -9,8 +9,6 @@
 
     <com.tarunisrani.magikui.magiklayouts.CircularLayout
         android:id="@+id/testLayout"
-        custom:layoutType="adjust"
-        custom:circleType="first_quarter"
         android:orientation="vertical"
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
