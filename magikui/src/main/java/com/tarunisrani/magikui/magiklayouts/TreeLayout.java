@@ -1,13 +1,10 @@
 package com.tarunisrani.magikui.magiklayouts;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
-
-import com.tarunisrani.magikui.R;
 
 //import com.tarunisrani.magikui.R;
 
@@ -22,7 +19,7 @@ public class TreeLayout extends FrameLayout {
 
     private Context context;
 
-    private int lType = 0;
+    private int lType = 1;
 
     private int radiusOuterCircle = 0;
     private double startingOffsetAngle = 0.0;
@@ -87,34 +84,11 @@ public class TreeLayout extends FrameLayout {
     public TreeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        initAttributes(attrs);
     }
 
     public TreeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
-        initAttributes(attrs);
-    }
-
-    private void initAttributes(AttributeSet attrs){
-        TypedArray a = getContext().getTheme().obtainStyledAttributes(
-                attrs,
-                R.styleable.TreeLayout,
-                0, 0);
-
-        try {
-
-            lType = a.getInteger(R.styleable.TreeLayout_layoutType, 0);
-//            String layoutType = a.getString(R.styleable.TreeLayout_layoutType);
-//            lType = layoutType!=null?layoutType.equals("adjust")?0:1:1;
-        } catch (Exception exp){
-            String layoutType = a.getString(R.styleable.TreeLayout_layoutType);
-            lType = layoutType!=null?layoutType.equals("adjust")?1:0:0;
-        }
-        finally {
-            a.recycle();
-        }
-
     }
 
     private int centerY(int offset){
@@ -243,15 +217,15 @@ public class TreeLayout extends FrameLayout {
 //        super.onLayout(changed, left, top, right, bottom);
 
         if(lType == ADJUST){
-            adjustLayout(changed, left, top, right, bottom);
+            adjustLayout();
         }
         else if(lType == CONDENSED){
-            condensedLAyout(changed, left, top, right, bottom);
+            condensedLAyout();
 //            adjustLayout(changed, left, top, right, bottom);
         }
     }
 
-    private void condensedLAyout(boolean changed, int left, int top, int right, int bottom){
+    private void condensedLAyout(){
         int count = getChildCount();
 
         int xPos = 0;
@@ -259,10 +233,6 @@ public class TreeLayout extends FrameLayout {
         int rowHeight = 0;
 
         int levels = logBase2(getChildCount());
-
-//        if(getChildAt(0)!=null){
-//            ((Button)getChildAt(0)).setText(String.valueOf(levels));
-//        }
 
         for (int i = 0; i < levels; i++) {
             int index = (int)Math.pow(2, i);
@@ -284,7 +254,6 @@ public class TreeLayout extends FrameLayout {
 
                     }
                 }
-
             }
 
             xPos = centerX() - rowWidth/2;
@@ -298,33 +267,18 @@ public class TreeLayout extends FrameLayout {
                         final int height = child.getMeasuredHeight();
 
                         rowHeight = Math.max(rowHeight, height + lp.bottomMargin);
-
-
-
-//                        if(divider!=0) {
-//                            if (childCount < divider) {
-//                                xPos = centerX() - (divider-childCount) * width;
-//                            } else {
-//                                xPos = centerX() + (childCount-divider) * width;
-//                            }
-//                        }
-
                         ++childCount;
 
                         child.layout(xPos, yPos, xPos + width, yPos + height);
                         xPos += width;
-
                     }
                 }
-
             }
             yPos += rowHeight;
-
-
         }
     }
 
-    private void adjustLayout(boolean changed, int left, int top, int right, int bottom){
+    private void adjustLayout(){
         int count = getChildCount();
 
         int xPos = 0;
@@ -340,11 +294,7 @@ public class TreeLayout extends FrameLayout {
         int child_two_avg_width = 0;
 
         int levels = logBase2(getChildCount());
-//        if(getChildAt(0)!=null){
-//            ((Button)getChildAt(0)).setText(String.valueOf(levels));
-//        }
 
-//        for (int i = 0; i < levels; i++) {
         for (int i = levels-1; i >=0; i--) {
             int index = (int) Math.pow(2, i);
             int range = index;
@@ -368,7 +318,6 @@ public class TreeLayout extends FrameLayout {
             rowWidth = rowWidth*range;
             yPos = viewHeight - rowHeight;
             viewHeight = viewHeight - rowHeight;
-//            xPos = centerX() - rowWidth / 2;
             xPos = 0;
             leftchildCount = 0;
             for (int j = index - 1; j < index - 1 + range; j++) {
@@ -407,12 +356,9 @@ public class TreeLayout extends FrameLayout {
                             else{
 
                                 if(getChildAt(j-1)!=null){
-//                                    xPos =  getChildAt(j-1).getRight() + (viewWidth)/(range - childCount);
                                     xPos =  getChildAt(j-1).getRight() + (child_one_avg_width/(leftchildCount*2)) + (child_two_avg_width/(rightchildCount*2));
                                     xPos += width/2;
                                 }
-//
-
                             }
 
                             viewWidth = getWidth() - child.getRight();
@@ -421,7 +367,6 @@ public class TreeLayout extends FrameLayout {
                             child.layout(xPos, yPos, xPos + width, yPos + height);
                         }
                         else{
-//                            xPos = 0;
                             child.layout(xPos, yPos, xPos + width, yPos + height);
                             xPos += width;
 
@@ -430,45 +375,16 @@ public class TreeLayout extends FrameLayout {
                 }
 
             }
-//            yPos += rowHeight;
         }
     }
 
     @Override
     public void draw(Canvas canvas) {
-
-
-        /*for(int i=0;i<getChildCount();i++){
-            View child = getChildAt(i);
-            MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
-            lp.topMargin = i*100;
-            child.setVisibility(GONE);
-            child.setY(i*100);
-            child.setTranslationY(i*100);
-            child.setLayoutParams(lp);
-            child.requestLayout();
-            child.draw(canvas);
-        }*/
         super.draw(canvas);
-
     }
     @Override
     protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-//        View child = getChildAt(i);
-//        MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
-//        lp.topMargin = 100;
-//        child.setVisibility(GONE);
-//        child.setY(100);
-//        child.setTranslationY(100);
-//        child.setLayoutParams(lp);
-//        child.requestLayout();
-//        child.draw(canvas);
-//        circlePaint.setColor(Color.BLACK);
-//        circlePaint.setStrokeWidth(2.0f);
-//        circlePaint.setStyle(Paint.Style.STROKE);
-//        canvas.drawCircle(centerX(), centerY(), radiusOuterCircle, circlePaint);
         return super.drawChild(canvas, child, drawingTime);
-//        return false;
     }
 
     @Override

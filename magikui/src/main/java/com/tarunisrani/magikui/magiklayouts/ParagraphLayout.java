@@ -13,79 +13,6 @@ import android.widget.FrameLayout;
 @TargetApi(11)
 public class ParagraphLayout extends FrameLayout {
 
-    private int radiusOuterCircle = 0;
-    private double startingOffsetAngle = 0.0;
-
-    private int xShift = 0;
-    private int yShift = 0;
-
-    private int extraPadding = 0;
-
-
-    private int mWidth = 0;
-    private int mHeight = 0;
-
-
-    public enum Layout_Type{
-        FIRST_QUARTER,
-        SECOND_QUARTER,
-        THIRD_QUARTER,
-        FOURTH_QUARTER,
-        UPPER_HALF,
-        LOWER_HALF,
-        FULL_CIRCLE
-    }
-
-    private Layout_Type lType = Layout_Type.FULL_CIRCLE;
-
-    public int getyShift() {
-        return yShift;
-    }
-
-    public void setyShift(int yShift) {
-        this.yShift = yShift;
-    }
-
-    public int getxShift() {
-        return xShift;
-    }
-
-    public void setxShift(int xShift) {
-        this.xShift = xShift;
-    }
-
-    public int getExtraPadding() {
-        return extraPadding;
-    }
-
-    public void setExtraPadding(int extraPadding) {
-        this.extraPadding = extraPadding;
-    }
-
-    public Layout_Type getlType() {
-        return lType;
-    }
-
-    public void setlType(Layout_Type lType) {
-        this.lType = lType;
-    }
-
-    public int getRadiusOuterCircle() {
-        return radiusOuterCircle;
-    }
-
-    public void setRadiusOuterCircle(int radiusOuterCircle) {
-        this.radiusOuterCircle = radiusOuterCircle;
-    }
-
-    public double getStartingOffsetAngle() {
-        return startingOffsetAngle;
-    }
-
-    public void setStartingOffsetAngle(double startingOffsetAngle) {
-        this.startingOffsetAngle = startingOffsetAngle;
-    }
-
     public ParagraphLayout(Context context) {
         super(context);
     }
@@ -98,43 +25,11 @@ public class ParagraphLayout extends FrameLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    private int centerY(int offset){
-        return getHeight()/2 + offset;
-    }
-
-    private int centerY(){
-        return centerY(0);
-    }
-
-    private int centerX(){
-        return getWidth()/2;
-    }
-
-    private float getYCoordinate(double angle){
-        double sinTheta = Math.sin(Math.toRadians(angle));
-        double yPos = radiusOuterCircle*sinTheta;
-
-        return (float)yPos;
-    }
-
-    private float getXCoordinate(double angle){
-        double cosTheta = Math.cos(Math.toRadians(angle));
-        double xPos = radiusOuterCircle*cosTheta;
-
-        return (float)xPos;
-    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-
-
-        int maxHeight = 0;
-        int maxWidth = 0;
-        int firstChildHeight = 0;
-        int firstChildWidth = 0;
-        int childState = 0;
         int count = getChildCount();
         int widthSum = 0;
         int heightSum = 0;
@@ -149,8 +44,6 @@ public class ParagraphLayout extends FrameLayout {
             }
         }
 
-
-
         int desiredWidth = widthSum;
         int desiredHeight = heightSum;
 
@@ -161,8 +54,6 @@ public class ParagraphLayout extends FrameLayout {
 
         int width;
         int height;
-
-
 
         //Measure Width
         if (widthMode == MeasureSpec.EXACTLY) {
@@ -188,10 +79,7 @@ public class ParagraphLayout extends FrameLayout {
             height = desiredHeight;
         }
 
-
         setMeasuredDimension(width, height);
-
-
     }
 
     @Override
@@ -228,47 +116,15 @@ public class ParagraphLayout extends FrameLayout {
                 xPos += lp.rightMargin;
 
             }
-
-
-
         }
-
     }
     @Override
     public void draw(Canvas canvas) {
-
-
-        /*for(int i=0;i<getChildCount();i++){
-            View child = getChildAt(i);
-            MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
-            lp.topMargin = i*100;
-            child.setVisibility(GONE);
-            child.setY(i*100);
-            child.setTranslationY(i*100);
-            child.setLayoutParams(lp);
-            child.requestLayout();
-            child.draw(canvas);
-        }*/
         super.draw(canvas);
-
     }
     @Override
     protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-//        View child = getChildAt(i);
-//        MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
-//        lp.topMargin = 100;
-//        child.setVisibility(GONE);
-//        child.setY(100);
-//        child.setTranslationY(100);
-//        child.setLayoutParams(lp);
-//        child.requestLayout();
-//        child.draw(canvas);
-//        circlePaint.setColor(Color.BLACK);
-//        circlePaint.setStrokeWidth(2.0f);
-//        circlePaint.setStyle(Paint.Style.STROKE);
-//        canvas.drawCircle(centerX(), centerY(), radiusOuterCircle, circlePaint);
         return super.drawChild(canvas, child, drawingTime);
-//        return false;
     }
 
     @Override

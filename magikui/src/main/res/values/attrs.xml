@@ -1,9 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="TreeLayout">
-        <attr name="layoutType" format="integer">
-            <enum name="condensed" value="0"/>
-            <enum name="adjust" value="1"/>
-        </attr>
-    </declare-styleable>
 </resources>
