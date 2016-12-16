@@ -1,6 +1,5 @@
 package com.tarunisrani.magikui.magiklayouts;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -39,17 +38,16 @@ public class CircularLayout extends FrameLayout {
     private BackgroundPath drawable;
 
 
-    public enum Layout_Type{
-        FIRST_QUARTER,
-        SECOND_QUARTER,
-        THIRD_QUARTER,
-        FOURTH_QUARTER,
-        UPPER_HALF,
-        LOWER_HALF,
-        FULL_CIRCLE
-    }
+    private final int FULL_CIRCLE = 101;
+    private final int UPPER_HALF = 102;
+    private final int LOWER_HALF = 103;
+    private final int FIRST_QUARTER = 104;
+    private final int SECOND_QUARTER = 105;
+    private final int THIRD_QUARTER = 106;
+    private final int FOURTH_QUARTER = 107;
 
-    private Layout_Type lType = Layout_Type.FULL_CIRCLE;
+
+    private int lType = UPPER_HALF;
 
     public int getyShift() {
         return yShift;
@@ -73,14 +71,6 @@ public class CircularLayout extends FrameLayout {
 
     public void setExtraPadding(int extraPadding) {
         this.extraPadding = extraPadding;
-    }
-
-    public Layout_Type getlType() {
-        return lType;
-    }
-
-    public void setlType(Layout_Type lType) {
-        this.lType = lType;
     }
 
     public int getRadiusCircle() {
@@ -118,21 +108,43 @@ public class CircularLayout extends FrameLayout {
 
     }
 
-    private void initAttributes(AttributeSet attrs){
+    private void initAttributes(AttributeSet attrs) {
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.CircularLayout,
                 0, 0);
 
         try {
+            String circleType = a.getString(R.styleable.CircularLayout_circleType);
+            circleType = circleType!=null?circleType:"";
 
-//            lType = a.getInteger(R.styleable.TreeLayout_layoutType, 0);
+            if(circleType.equals("full")){
+                lType = FULL_CIRCLE;
+            }else if(circleType.equals("upper_half")){
+                lType = UPPER_HALF;
+            }else if(circleType.equals("lower_half")){
+                lType = LOWER_HALF;
+            }else if(circleType.equals("first_quarter")){
+                lType = FIRST_QUARTER;
+            }else if(circleType.equals("second_quarter")){
+                lType = SECOND_QUARTER;
+            }else if(circleType.equals("third_quarter")){
+                lType = THIRD_QUARTER;
+            }else if(circleType.equals("fourth_quarter")){
+                lType = FOURTH_QUARTER;
+            }else{
+                lType = Integer.parseInt(circleType);
+            }
+
             circularPathColor = a.getColor(R.styleable.CircularLayout_circularPathColor, Color.TRANSPARENT);
+
+        } catch (Exception exp) {
+            exp.printStackTrace();
+            lType = a.getInteger(R.styleable.CircularLayout_circleType, FIRST_QUARTER);
 
         } finally {
             a.recycle();
         }
-
     }
 
     private int centerY(int offset){
@@ -153,9 +165,6 @@ public class CircularLayout extends FrameLayout {
     }
 
     private float getYCoordinate(double angle){
-//        double sinTheta = Math.sin(Math.toRadians(angle));
-//        double yPos = radiusCircle*sinTheta;
-//        return (float)yPos;
         return getYCoordinate(angle, radiusCircle);
     }
     private float getYCoordinate(double angle, int radius){
@@ -166,9 +175,6 @@ public class CircularLayout extends FrameLayout {
     }
 
     private float getXCoordinate(double angle){
-//        double cosTheta = Math.cos(Math.toRadians(angle));
-//        double xPos = radiusCircle*cosTheta;
-//        return (float)xPos;
         return getXCoordinate(angle, radiusCircle);
     }
 
@@ -185,121 +191,64 @@ public class CircularLayout extends FrameLayout {
         }
     }
 
-
-    public void playExpandAnimation(){
-        playExpandAnimation(500);
-    }
-
-    public void playExpandAnimation(int time){
-        int finalvalue = radiusCircle;
-        ValueAnimator anim = ValueAnimator.ofInt(0, finalvalue);
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int val = ((Integer)animation.getAnimatedValue()).intValue();
-//                ((Button)getChildAt(0)).setText(String.valueOf(val));
-                performLayouting(val);
-                drawable.redraw(val);
-                invalidate();
-            }
-        });
-        anim.setDuration(time);
-        anim.start();
-//        return anim;
-    }
-
-    public ValueAnimator.AnimatorUpdateListener getUpdateListener(){
-        return new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int val = ((Integer)animation.getAnimatedValue()).intValue();
-//                ((Button)getChildAt(0)).setText(String.valueOf(val));
-
-
-                performLayouting(val);
-                drawable.redraw(val);
-            }
-        };
-    }
-
     @Override
     public void draw(Canvas canvas) {
-
-
-        /*for(int i=0;i<getChildCount();i++){
-            View child = getChildAt(i);
-            MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
-            lp.topMargin = i*100;
-            child.setVisibility(GONE);
-            child.setY(i*100);
-            child.setTranslationY(i*100);
-            child.setLayoutParams(lp);
-            child.requestLayout();
-            child.draw(canvas);
-        }*/
-
-
         super.draw(canvas);
-
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
+        int maxHeight = 0;
+        int maxWidth = 0;
+        int firstChildHeight = 0;
+        int firstChildWidth = 0;
+        int childState = 0;
+        int count = getChildCount();
 
 
-            int maxHeight = 0;
-            int maxWidth = 0;
-            int firstChildHeight = 0;
-            int firstChildWidth = 0;
-            int childState = 0;
-            int count = getChildCount();
+        //Calculating dimension of first child element of layout.
+        // Since we have added an extra view previously, first element index is 1.
 
-            for (int i = 2; i < count; i++) {
-                final View child = getChildAt(i);
-                if (child.getVisibility() != GONE) {
-                    measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0);
-                    final LayoutParams lp = (LayoutParams) child.getLayoutParams();
-                    maxWidth = Math.max(maxWidth,
-                            child.getMeasuredWidth() + lp.leftMargin + lp.rightMargin);
-                    maxHeight = Math.max(maxHeight,
-                            child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin);
-                    childState = combineMeasuredStates(childState, child.getMeasuredState());
+        final View firstChild = getChildAt(1);
+        if (firstChild.getVisibility() != GONE) {
+            measureChildWithMargins(firstChild, widthMeasureSpec, 0, heightMeasureSpec, 0);
+            final LayoutParams lp = (LayoutParams) firstChild.getLayoutParams();
+            firstChildWidth = firstChild.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
+            firstChildHeight = firstChild.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
+            childState = combineMeasuredStates(childState, firstChild.getMeasuredState());
 
-                }
+        }
+
+        //Calculating maximum height and maximum width of all the elements in layout
+        // apart from first element as it is placed in center.
+
+        for (int i = 2; i < count; i++) {
+            final View child = getChildAt(i);
+            if (child.getVisibility() != GONE) {
+                measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0);
+                final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+                maxWidth = Math.max(maxWidth,
+                        child.getMeasuredWidth() + lp.leftMargin + lp.rightMargin);
+                maxHeight = Math.max(maxHeight,
+                        child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin);
+                childState = combineMeasuredStates(childState, child.getMeasuredState());
             }
-
-            final View firstChild = getChildAt(1);
-            if (firstChild.getVisibility() != GONE) {
-                measureChildWithMargins(firstChild, widthMeasureSpec, 0, heightMeasureSpec, 0);
-                final LayoutParams lp = (LayoutParams) firstChild.getLayoutParams();
-                firstChildWidth = Math.max(firstChildWidth,
-                        firstChild.getMeasuredWidth() + lp.leftMargin + lp.rightMargin);
-                firstChildHeight = Math.max(firstChildHeight,
-                        firstChild.getMeasuredHeight() + lp.topMargin + lp.bottomMargin);
-                childState = combineMeasuredStates(childState, firstChild.getMeasuredState());
-
-            }
-
-            maxHeight = (int) (maxHeight * 1.0f);
-            maxWidth = (int) (maxWidth * 1.0f);
-
-            int diagonal = 0;
-            diagonal = (int) Math.sqrt(maxHeight * maxHeight + maxWidth * maxWidth);
-
-            maxHeight = (int) (maxHeight * 2.0f);
-            maxWidth = (int) (maxWidth * 2.0f);
-
-            maxHeight += firstChildHeight;
-            maxWidth += firstChildWidth;
+        }
 
 
-            // Account for padding too
+        int max_diagonal_of_child = (int) Math.sqrt(maxHeight * maxHeight + maxWidth * maxWidth);
+
+        maxHeight = maxHeight * 2 + firstChildHeight;
+        maxWidth = maxWidth * 2 + firstChildWidth;
+
+
+        // Account for padding too
 //        maxWidth += getPaddingLeftWithForeground() + getPaddingRightWithForeground();
 //        maxHeight += getPaddingTopWithForeground() + getPaddingBottomWithForeground();
 
-            // Check against our minimum height and width
+        // Check against our minimum height and width
 //        maxHeight = Math.max(maxHeight, getSuggestedMinimumHeight());
 //        maxWidth = Math.max(maxWidth, getSuggestedMinimumWidth());
 
@@ -307,7 +256,7 @@ public class CircularLayout extends FrameLayout {
 //        maxWidth = maxHeight;
 
 
-            // Check against our foreground's minimum height and width
+        // Check against our foreground's minimum height and width
         /*final Drawable drawable = getForeground();
         if (drawable != null) {
             maxHeight = Math.max(maxHeight, drawable.getMinimumHeight());
@@ -319,40 +268,40 @@ public class CircularLayout extends FrameLayout {
 //                        childState << MEASURED_HEIGHT_STATE_SHIFT));
 
 
-            if (lType == Layout_Type.FIRST_QUARTER || lType == Layout_Type.SECOND_QUARTER || lType == Layout_Type.THIRD_QUARTER || lType == Layout_Type.FOURTH_QUARTER) {
-                maxHeight += (int) (firstChildHeight * 1.25f);      //Just for a little padding
-                maxWidth += (int) (firstChildWidth * 1.25f);        //Just for a little padding
-            } else {
-                maxHeight += (int) (firstChildHeight * 0.75f);      //Just for a little padding
-                maxWidth += (int) (firstChildWidth * 0.75f);        //Just for a little padding
-            }
+        if (lType == FIRST_QUARTER || lType == SECOND_QUARTER || lType == THIRD_QUARTER || lType == FOURTH_QUARTER) {
+            maxHeight += (int) (firstChildHeight * 1.25f);      //Just for a little padding
+            maxWidth += (int) (firstChildWidth * 1.25f);        //Just for a little padding
+        } else {
+            maxHeight += (int) (firstChildHeight * 0.75f);      //Just for a little padding
+            maxWidth += (int) (firstChildWidth * 0.75f);        //Just for a little padding
+        }
 
 //            radiusOuterCircle = Math.max(maxWidth, maxHeight) / 2;
 
-            /*if (lType == Layout_Type.FULL_CIRCLE) {
+            /*if (lType == FULL_CIRCLE) {
                 maxHeight = Math.max(maxHeight, maxWidth);
                 maxWidth = maxHeight;
-            } else if (lType == Layout_Type.UPPER_HALF || lType == Layout_Type.FIRST_QUARTER || lType == Layout_Type.FOURTH_QUARTER) {
+            } else if (lType == UPPER_HALF || lType == FIRST_QUARTER || lType == FOURTH_QUARTER) {
                 yShift = maxHeight / 2;
 
-            } else if (lType == Layout_Type.LOWER_HALF || lType == Layout_Type.SECOND_QUARTER || lType == Layout_Type.THIRD_QUARTER) {
+            } else if (lType == LOWER_HALF || lType == SECOND_QUARTER || lType == THIRD_QUARTER) {
                 yShift = -maxHeight / 2;
 
             }
 
-            if (lType == Layout_Type.SECOND_QUARTER || lType == Layout_Type.FOURTH_QUARTER) {
+            if (lType == SECOND_QUARTER || lType == FOURTH_QUARTER) {
                 int lastchildwidth = getChildAt(getChildCount() - 1).getMeasuredWidth();
                 shiftangle = (Math.atan2(lastchildwidth / 2, (double) radiusCircle) * 180) / Math.PI;
                 maxWidth = maxWidth / 2;
-            } else if (lType == Layout_Type.FIRST_QUARTER || lType == Layout_Type.THIRD_QUARTER) {
+            } else if (lType == FIRST_QUARTER || lType == THIRD_QUARTER) {
                 int lastchildwidth = getChildAt(2).getMeasuredWidth();
                 shiftangle = (Math.atan2(lastchildwidth / 2, (double) radiusCircle) * 180) / Math.PI;
                 maxWidth = maxWidth / 2;
             }
 
-            if (lType == Layout_Type.FIRST_QUARTER || lType == Layout_Type.SECOND_QUARTER) {
+            if (lType == FIRST_QUARTER || lType == SECOND_QUARTER) {
                 xShift = -maxWidth / 2;
-            } else if (lType == Layout_Type.THIRD_QUARTER || lType == Layout_Type.FOURTH_QUARTER) {
+            } else if (lType == THIRD_QUARTER || lType == FOURTH_QUARTER) {
                 xShift = maxWidth / 2;
             }*/
 
@@ -379,14 +328,14 @@ public class CircularLayout extends FrameLayout {
 //                    resolveSizeAndState(maxHeight, heightMeasureSpec,
 //                            childState << MEASURED_HEIGHT_STATE_SHIFT));
 
-        if (lType == Layout_Type.FULL_CIRCLE) {
+        if (lType == FULL_CIRCLE) {
             maxHeight = Math.max(maxHeight, maxWidth);
             maxWidth = maxHeight;
-        } else if (lType == Layout_Type.SECOND_QUARTER || lType == Layout_Type.FOURTH_QUARTER) {
+        } else if (lType == SECOND_QUARTER || lType == FOURTH_QUARTER) {
             int lastchildwidth = getChildAt(getChildCount() - 1).getMeasuredWidth();
             shiftangle = (Math.atan2(lastchildwidth / 2, (double) radiusCircle) * 180) / Math.PI;
             maxWidth = maxWidth / 2;
-        } else if (lType == Layout_Type.FIRST_QUARTER || lType == Layout_Type.THIRD_QUARTER) {
+        } else if (lType == FIRST_QUARTER || lType == THIRD_QUARTER) {
             int lastchildwidth = getChildAt(2).getMeasuredWidth();
             shiftangle = (Math.atan2(lastchildwidth / 2, (double) radiusCircle) * 180) / Math.PI;
             maxWidth = maxWidth / 2;
@@ -430,34 +379,34 @@ public class CircularLayout extends FrameLayout {
         }
 
 
-        if (lType == Layout_Type.FULL_CIRCLE) {
+        if (lType == FULL_CIRCLE) {
             maxHeight = Math.max(maxHeight, maxWidth);
             maxWidth = maxHeight;
-        } else if (lType == Layout_Type.UPPER_HALF || lType == Layout_Type.FIRST_QUARTER || lType == Layout_Type.FOURTH_QUARTER) {
+        } else if (lType == UPPER_HALF || lType == FIRST_QUARTER || lType == FOURTH_QUARTER) {
             yShift = height / 2;
 
-        } else if (lType == Layout_Type.LOWER_HALF || lType == Layout_Type.SECOND_QUARTER || lType == Layout_Type.THIRD_QUARTER) {
+        } else if (lType == LOWER_HALF || lType == SECOND_QUARTER || lType == THIRD_QUARTER) {
             yShift = -height / 2;
 
         }
 
-//        if (lType == Layout_Type.SECOND_QUARTER || lType == Layout_Type.FOURTH_QUARTER) {
+//        if (lType == SECOND_QUARTER || lType == FOURTH_QUARTER) {
 //            int lastchildwidth = getChildAt(getChildCount() - 1).getMeasuredWidth();
 //            shiftangle = (Math.atan2(lastchildwidth / 2, (double) radiusCircle) * 180) / Math.PI;
-//        } else if (lType == Layout_Type.FIRST_QUARTER || lType == Layout_Type.THIRD_QUARTER) {
+//        } else if (lType == FIRST_QUARTER || lType == THIRD_QUARTER) {
 //            int lastchildwidth = getChildAt(2).getMeasuredWidth();
 //            shiftangle = (Math.atan2(lastchildwidth / 2, (double) radiusCircle) * 180) / Math.PI;
 //        }
 
-        if (lType == Layout_Type.FIRST_QUARTER || lType == Layout_Type.SECOND_QUARTER) {
+        if (lType == FIRST_QUARTER || lType == SECOND_QUARTER) {
             xShift = -width / 2;
-        } else if (lType == Layout_Type.THIRD_QUARTER || lType == Layout_Type.FOURTH_QUARTER) {
+        } else if (lType == THIRD_QUARTER || lType == FOURTH_QUARTER) {
             xShift = width / 2;
         }
 
 
 
-        if(lType == Layout_Type.FULL_CIRCLE || lType == Layout_Type.UPPER_HALF || lType == Layout_Type.LOWER_HALF){
+        if(lType == FULL_CIRCLE || lType == UPPER_HALF || lType == LOWER_HALF){
             radiusOuterCircle = Math.min(width, height) / 2;
         }
         else {
@@ -472,17 +421,14 @@ public class CircularLayout extends FrameLayout {
         radiusOuterCircle -= extraPadding;
 
 
-        widthCircularPath = (int) (diagonal * 1.0);
+        widthCircularPath = (int) (max_diagonal_of_child * 1.0);
         radiusInnerCircle = radiusOuterCircle - widthCircularPath;
         radiusCircle = (radiusOuterCircle + radiusInnerCircle) / 2;
 
         drawable.initialize();
         drawable.redraw(radiusCircle);
 
-
         setMeasuredDimension(width, height);
-
-
     }
 
     @Override
@@ -519,43 +465,43 @@ public class CircularLayout extends FrameLayout {
 
 
 
-        if(lType == Layout_Type.FULL_CIRCLE){
+        if(lType == FULL_CIRCLE){
             endAngle = 360.0;
         }
-        else if(lType == Layout_Type.LOWER_HALF){
+        else if(lType == LOWER_HALF){
             endAngle = 180.0;
         }
-        else if(lType == Layout_Type.UPPER_HALF){
+        else if(lType == UPPER_HALF){
             endAngle = 180.0;
             ang = -180.0;
         }
-        else if(lType == Layout_Type.FIRST_QUARTER){
+        else if(lType == FIRST_QUARTER){
             endAngle = 90.0;
             ang = -90.0;
             ang += shiftangle;
             endAngle -= shiftangle;
         }
-        else if(lType == Layout_Type.SECOND_QUARTER){
+        else if(lType == SECOND_QUARTER){
             endAngle = 90.0;
             endAngle -= shiftangle;
         }
-        else if(lType == Layout_Type.THIRD_QUARTER){
+        else if(lType == THIRD_QUARTER){
             endAngle = 90.0;
             ang = 90.0;
             ang += shiftangle;
             endAngle -= shiftangle;
         }
-        else if(lType == Layout_Type.FOURTH_QUARTER){
+        else if(lType == FOURTH_QUARTER){
             endAngle = 90.0;
             ang = 180.0;
             endAngle -= shiftangle;
         }
 
 
-        /*if(lType == Layout_Type.SECOND_QUARTER || lType == Layout_Type.FOURTH_QUARTER ){
+        /*if(lType == SECOND_QUARTER || lType == FOURTH_QUARTER ){
             int lastchildwidth = getChildAt(getChildCount()-1).getMeasuredWidth();
             shiftangle = (Math.atan2(lastchildwidth/2, (double)radiusCircle)* 180)/ Math.PI;
-        }else if(lType == Layout_Type.FIRST_QUARTER || lType == Layout_Type.THIRD_QUARTER ){
+        }else if(lType == FIRST_QUARTER || lType == THIRD_QUARTER ){
             int lastchildwidth = getChildAt(2).getMeasuredWidth();
             shiftangle = (Math.atan2(lastchildwidth/2, (double)radiusCircle)* 180)/ Math.PI;
         }*/
@@ -597,23 +543,23 @@ public class CircularLayout extends FrameLayout {
 
         int center_y = centerY();
 //        center_y -= getChildAt(1).getMeasuredHeight()/2;
-//        if(lType == Layout_Type.UPPER_HALF || lType == Layout_Type.LOWER_HALF) {
-        if(lType!=Layout_Type.FULL_CIRCLE) {
+//        if(lType == UPPER_HALF || lType == LOWER_HALF) {
+        if(lType!=FULL_CIRCLE) {
             center_y += yShift;
         }
         else{
             center_y -= getChildAt(1).getMeasuredHeight()/2;
         }
 //        }
-        if(lType == Layout_Type.UPPER_HALF || lType == Layout_Type.FIRST_QUARTER || lType == Layout_Type.FOURTH_QUARTER) {
+        if(lType == UPPER_HALF || lType == FIRST_QUARTER || lType == FOURTH_QUARTER) {
             center_y -= getChildAt(1).getMeasuredHeight();
-        }else if(lType == Layout_Type.LOWER_HALF || lType == Layout_Type.SECOND_QUARTER || lType == Layout_Type.THIRD_QUARTER) {
+        }else if(lType == LOWER_HALF || lType == SECOND_QUARTER || lType == THIRD_QUARTER) {
 //            center_y += getChildAt(1).getMeasuredHeight()/2;
         }
 
-        if(lType == Layout_Type.FIRST_QUARTER || lType == Layout_Type.SECOND_QUARTER) {
+        if(lType == FIRST_QUARTER || lType == SECOND_QUARTER) {
             center_x += getChildAt(1).getMeasuredHeight();
-        }else if(lType == Layout_Type.THIRD_QUARTER || lType == Layout_Type.FOURTH_QUARTER) {
+        }else if(lType == THIRD_QUARTER || lType == FOURTH_QUARTER) {
             center_x -= getChildAt(1).getMeasuredHeight();
         }
 
@@ -720,30 +666,30 @@ public class CircularLayout extends FrameLayout {
             circlePaint.setStrokeWidth(widthCircularPath);
             circlePaint.setStyle(Paint.Style.STROKE);
 
-            if(lType == Layout_Type.UPPER_HALF){
+            if(lType == UPPER_HALF){
                 mPath.addRect(0, 0, getWidth(), centerY(), Path.Direction.CW);
             }
-            else if(lType == Layout_Type.LOWER_HALF){
+            else if(lType == LOWER_HALF){
                 mPath.addRect(0, centerY(), getWidth(), getHeight(), Path.Direction.CCW);
             }
-            else if(lType == Layout_Type.FIRST_QUARTER){
+            else if(lType == FIRST_QUARTER){
 //                mPath.addRect(0, 0, getWidth(), centerY(), Path.Direction.CCW);
                 mPath.addRect(centerX(), 0, getWidth(), centerY(), Path.Direction.CCW);
             }
-            else if(lType == Layout_Type.THIRD_QUARTER){
+            else if(lType == THIRD_QUARTER){
 //                mPath.addRect(0, 0, getWidth(), centerY(), Path.Direction.CCW);
                 mPath.addRect(0, centerX(), centerY(), getHeight(), Path.Direction.CCW);
             }
-            else if(lType == Layout_Type.SECOND_QUARTER){
+            else if(lType == SECOND_QUARTER){
 //                mPath.addRect(0, 0, getWidth(), centerY(), Path.Direction.CCW);
                 mPath.addRect(centerX(), centerY(), getWidth(), getHeight(), Path.Direction.CCW);
             }
-            else if(lType == Layout_Type.FOURTH_QUARTER){
+            else if(lType == FOURTH_QUARTER){
 //                mPath.addRect(0, 0, getWidth(), centerY(), Path.Direction.CCW);
 
                 mPath.addRect(0, 0, centerX(), centerY(), Path.Direction.CCW);
             }
-//            else if(lType == Layout_Type.LOWER_HALF){
+//            else if(lType == LOWER_HALF){
 //                mPath.addRect(0, centerY(), getWidth(), getHeight(), Path.Direction.CCW);
 //            }
 
@@ -774,30 +720,30 @@ public class CircularLayout extends FrameLayout {
 
 
 //            mPath.addCircle(centerX(), centerY(), radiusInnerCircle, Path.Direction.CCW);
-            if(lType!=Layout_Type.FULL_CIRCLE) {
+            if(lType!=FULL_CIRCLE) {
 //                canvas.clipPath(mPath, Region.Op.REPLACE);
 
-                /*if(lType == Layout_Type.UPPER_HALF){
+                /*if(lType == UPPER_HALF){
                     mPath.addRect(0, 0, getWidth(), centerY(), Path.Direction.CCW);
                     canvas.clipRect(0, 0, getWidth(), centerY(), Region.Op.REPLACE);
                 }
-                else if(lType == Layout_Type.LOWER_HALF){
+                else if(lType == LOWER_HALF){
                     mPath.addRect(0, centerY(), getWidth(), getHeight(), Path.Direction.CCW);
                     canvas.clipRect(0, centerY(), getWidth(), getHeight(), Region.Op.REPLACE);
                 }
-                else if(lType == Layout_Type.FIRST_QUARTER){
+                else if(lType == FIRST_QUARTER){
                     mPath.addRect(centerX(), 0, getWidth(), centerY(), Path.Direction.CCW);
                     canvas.clipRect(centerX(), 0, getWidth(), centerY(), Region.Op.REPLACE);
                 }
-                else if(lType == Layout_Type.THIRD_QUARTER){
+                else if(lType == THIRD_QUARTER){
                     mPath.addRect(0, centerX(), centerY(), getHeight(), Path.Direction.CCW);
                     canvas.clipRect(0, centerX(), centerY(), getHeight(), Region.Op.REPLACE);
                 }
-                else if(lType == Layout_Type.SECOND_QUARTER){
+                else if(lType == SECOND_QUARTER){
                     mPath.addRect(centerX(), centerY(), getWidth(), getHeight(), Path.Direction.CCW);
                     canvas.clipRect(centerX(), centerY(), getWidth(), getHeight(), Region.Op.REPLACE);
                 }
-                else if(lType == Layout_Type.FOURTH_QUARTER){
+                else if(lType == FOURTH_QUARTER){
                     mPath.addRect(0, 0, centerX(), centerY(), Path.Direction.CCW);
                     canvas.clipRect(0, 0, centerX(), centerY(), Region.Op.REPLACE);
                 }*/
