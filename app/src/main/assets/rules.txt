@@ -1,0 +1,35 @@
+{
+	"rules": [{
+		"class": "textview",
+		"property": {
+			"type": "textcolor",
+			"value": "red"
+		}
+	}, {
+		"class": "textview, button",
+		"property": {
+			"type": "bgcolor",
+			"value": "#ffffff"
+		}
+	}, {
+		"class": "button",
+		"property": {
+			"type": "dimension",
+			"value": "150"
+		}
+	}, {
+		"class": "textview",
+		"property": {
+			"type": "text",
+			"value": "A"
+		}
+
+	}, {
+		"class": "button",
+		"property": {
+			"type": "padding",
+			"value": "50"
+		}
+
+	}]
+}

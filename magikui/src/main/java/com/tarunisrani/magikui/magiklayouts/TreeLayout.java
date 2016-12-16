@@ -1,11 +1,11 @@
 package com.tarunisrani.magikui.magiklayouts;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import com.tarunisrani.magikui.R;
 
@@ -14,99 +14,38 @@ import com.tarunisrani.magikui.R;
 /**
  * Created by tarunisrani on 6/14/16.
  */
-public class TreeLayout extends FrameLayout {
+public class TreeLayout extends MagikLayout {
 
     private final int CONDENSED = 0;
     private final int ADJUST = 1;
 
-
-    private Context context;
+    public static final int ANIMATION_SLIDE = 103;
 
     private int lType = 0;
 
-    private int radiusOuterCircle = 0;
-    private double startingOffsetAngle = 0.0;
-
-    private int xShift = 0;
-    private int yShift = 0;
-
-    private int extraPadding = 0;
-
-
-    private int mWidth = 0;
-    private int mHeight = 0;
-
-
-    public int getyShift() {
-        return yShift;
-    }
-
-    public void setyShift(int yShift) {
-        this.yShift = yShift;
-    }
-
-    public int getxShift() {
-        return xShift;
-    }
-
-    public void setxShift(int xShift) {
-        this.xShift = xShift;
-    }
-
-
-    public int getExtraPadding() {
-        return extraPadding;
-    }
-
-    public void setExtraPadding(int extraPadding) {
-        this.extraPadding = extraPadding;
-    }
-
-
-    public int getRadiusOuterCircle() {
-        return radiusOuterCircle;
-    }
-
-    public void setRadiusOuterCircle(int radiusOuterCircle) {
-        this.radiusOuterCircle = radiusOuterCircle;
-    }
-
-    public double getStartingOffsetAngle() {
-        return startingOffsetAngle;
-    }
-
-    public void setStartingOffsetAngle(double startingOffsetAngle) {
-        this.startingOffsetAngle = startingOffsetAngle;
-    }
 
     public TreeLayout(Context context) {
         super(context);
-        this.context = context;
     }
 
     public TreeLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.context = context;
         initAttributes(attrs);
     }
 
     public TreeLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.context = context;
         initAttributes(attrs);
     }
 
     private void initAttributes(AttributeSet attrs){
+
         TypedArray a = getContext().getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.TreeLayout,
                 0, 0);
-
         try {
-
             lType = a.getInteger(R.styleable.TreeLayout_layoutType, 0);
-//            String layoutType = a.getString(R.styleable.TreeLayout_layoutType);
-//            lType = layoutType!=null?layoutType.equals("adjust")?0:1:1;
         } catch (Exception exp){
             String layoutType = a.getString(R.styleable.TreeLayout_layoutType);
             lType = layoutType!=null?layoutType.equals("adjust")?1:0:0;
@@ -114,8 +53,9 @@ public class TreeLayout extends FrameLayout {
         finally {
             a.recycle();
         }
-
     }
+
+
 
     private int centerY(int offset){
         return getHeight()/2 + offset;
@@ -129,19 +69,7 @@ public class TreeLayout extends FrameLayout {
         return getWidth()/2;
     }
 
-    private float getYCoordinate(double angle){
-        double sinTheta = Math.sin(Math.toRadians(angle));
-        double yPos = radiusOuterCircle*sinTheta;
 
-        return (float)yPos;
-    }
-
-    private float getXCoordinate(double angle){
-        double cosTheta = Math.cos(Math.toRadians(angle));
-        double xPos = radiusOuterCircle*cosTheta;
-
-        return (float)xPos;
-    }
 
     private int logBase2(int val){
         int value = val;
@@ -172,23 +100,44 @@ public class TreeLayout extends FrameLayout {
                 measureChildWithMargins(child, widthMeasureSpec, 0, heightMeasureSpec, 0);
                 final LayoutParams lp = (LayoutParams) child.getLayoutParams();
                 maxWidth = Math.max(maxWidth,child.getMeasuredWidth() + lp.leftMargin + lp.rightMargin);
-                maxHight = Math.max(maxHight,child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin);
+//                maxHight = Math.max(maxHight,child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin);
             }
         }
 
+        int desiredHeight = 0;
 
-        int totalChildren = (int) Math.pow(2, levels) - 1;
+        for (int i = 0; i < levels; i++) {
+            int index = (int)Math.pow(2, i);
+            int range = index;
+            maxHight = 0;
+            for(int j=index-1;j<index-1+range;j++) {
+                if(j<count) {
+                    final View child = getChildAt(j);
+                    if (child.getVisibility() != GONE) {
+                        final LayoutParams lp = (LayoutParams) child.getLayoutParams();
+
+//                        final int width = child.getMeasuredWidth();
+                        final int height = child.getMeasuredHeight();
+
+                        maxHight = Math.max(maxHight,height + lp.topMargin + lp.bottomMargin);
+                    }
+                }
+            }
+            desiredHeight +=maxHight;
+        }
+
+        /*int totalChildren = (int) Math.pow(2, levels) - 1;
 
         int numOfChildrenRemaining = totalChildren - count;
         if(numOfChildrenRemaining>0){
             for (int i=0;i<numOfChildrenRemaining;i++){
-//                addView(new View(getContext()), getChildAt(count-1).getWidth(), getChildAt(count-1).getHeight());
+                addView(new View(getContext()), getChildAt(count-1).getWidth(), getChildAt(count-1).getHeight());
             }
 
-        }
+        }*/
 
         int desiredWidth = maxWidth*childOffsetCount;
-        int desiredHeight = maxHight*levels;
+//        int desiredHeight = maxHight*levels;
 
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
@@ -230,14 +179,6 @@ public class TreeLayout extends FrameLayout {
 
     }
 
-    /*@Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-
-
-
-    }*/
-
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 //        super.onLayout(changed, left, top, right, bottom);
@@ -249,6 +190,44 @@ public class TreeLayout extends FrameLayout {
             condensedLAyout(changed, left, top, right, bottom);
 //            adjustLayout(changed, left, top, right, bottom);
         }
+
+        if(performAnimationAfterLayouting && selectedAnimation!=0) {
+
+
+            ValueAnimator animator = ValueAnimator.ofFloat(0.0f, 100.0f);
+            if(selectedAnimation == ANIMATION_SLIDE) {
+                attachSlideAnimation(animator);
+            }
+            else if(selectedAnimation == ANIMATION_APPEARE){
+                attachAppearAnimation(animator);
+            }
+            animator.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    performAnimationAfterLayouting = false;
+                    selectedAnimation = 0;
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            animator.setDuration(ANIMATION_DEFAULT_DURATION);
+            animator.start();
+
+        }
+
     }
 
     private void condensedLAyout(boolean changed, int left, int top, int right, int bottom){
@@ -311,8 +290,10 @@ public class TreeLayout extends FrameLayout {
 
                         ++childCount;
 
+                        xPos += lp.leftMargin;
                         child.layout(xPos, yPos, xPos + width, yPos + height);
                         xPos += width;
+                        xPos += lp.rightMargin;
 
                     }
                 }
@@ -350,6 +331,7 @@ public class TreeLayout extends FrameLayout {
             int range = index;
 
             int rowWidth = 0;
+            rowHeight = 0;
 
             for (int j = index - 1; j < index - 1 + range; j++) {
                 if (j < count) {
@@ -418,12 +400,16 @@ public class TreeLayout extends FrameLayout {
                             viewWidth = getWidth() - child.getRight();
 
                             xPos -= width/2;
+
                             child.layout(xPos, yPos, xPos + width, yPos + height);
+                            //TODO: Need to add provision of left and right margin for non-leaf nodes.
                         }
                         else{
 //                            xPos = 0;
+                            xPos += lp.leftMargin;
                             child.layout(xPos, yPos, xPos + width, yPos + height);
                             xPos += width;
+                            xPos += lp.rightMargin;
 
                         }
                     }
@@ -434,45 +420,41 @@ public class TreeLayout extends FrameLayout {
         }
     }
 
-    @Override
-    public void draw(Canvas canvas) {
+    private void attachSlideAnimation(ValueAnimator animator){
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            int count = getChildCount() - 1;
+            int index_parent = (count - 1) / 2;
+            final float x_parent = getChildAt(index_parent).getX();
+            final float y_parent = getChildAt(index_parent).getY();
 
+            float x_child = getChildAt(count).getX();
+            float y_child = getChildAt(count).getY();
 
-        /*for(int i=0;i<getChildCount();i++){
-            View child = getChildAt(i);
-            MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
-            lp.topMargin = i*100;
-            child.setVisibility(GONE);
-            child.setY(i*100);
-            child.setTranslationY(i*100);
-            child.setLayoutParams(lp);
-            child.requestLayout();
-            child.draw(canvas);
-        }*/
-        super.draw(canvas);
+            final float delta_x = (x_child - x_parent) / 100.0f;
+            final float delta_y = (y_child - y_parent) / 100.0f;
 
-    }
-    @Override
-    protected boolean drawChild(Canvas canvas, View child, long drawingTime) {
-//        View child = getChildAt(i);
-//        MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
-//        lp.topMargin = 100;
-//        child.setVisibility(GONE);
-//        child.setY(100);
-//        child.setTranslationY(100);
-//        child.setLayoutParams(lp);
-//        child.requestLayout();
-//        child.draw(canvas);
-//        circlePaint.setColor(Color.BLACK);
-//        circlePaint.setStrokeWidth(2.0f);
-//        circlePaint.setStyle(Paint.Style.STROKE);
-//        canvas.drawCircle(centerX(), centerY(), radiusOuterCircle, circlePaint);
-        return super.drawChild(canvas, child, drawingTime);
-//        return false;
+            final View animView = getChildAt(count);
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = ((Float) animation.getAnimatedValue()).floatValue();
+                animView.setX(x_parent + delta_x * value);
+                animView.setY(y_parent + delta_y * value);
+            }
+        });
     }
 
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
+
+
+    /*@Override
+    public void addViewWithAnimation(View child, int animCode) {
+
+        addView(child);
+        requestAnimation(animCode);
     }
+
+    private void requestAnimation(int animCode){
+        selectedAnimation = animCode;
+        performAnimationAfterLayouting = true;
+    }*/
+
 }

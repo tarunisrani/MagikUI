@@ -7,99 +7,51 @@
     android:background="#c3c3c3"
     tools:context="com.tarunisrani.magickui.MainActivity">
 
-    <com.tarunisrani.magikui.magiklayouts.TreeLayout
+    <com.tarunisrani.magikui.magiklayouts.CircularLayout
         android:id="@+id/testLayout"
         custom:layoutType="adjust"
+        custom:circleType="upper_half"
+        android:orientation="vertical"
         android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <!--<com.tarunisrani.magikui.magiklayouts.CircularLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="A" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="B" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="C" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="D" />
-            </com.tarunisrani.magikui.magiklayouts.CircularLayout>-->
         <Button
             android:id="@+id/centerButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:visibility="visible"
             android:text="1" />
         <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:text="2"/>
         <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:text="3"/>
         <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:text="4"/>
         <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:gravity="center"
             android:text="5"/>
+
         <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:text="6"/>
         <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:text="7"/>
         <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:gravity="center"
             android:text="8"/>
-
-        <!--<Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="8"/>
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="9"/>
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="10"/>
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="11"/>
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="12"/>
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="13"/>
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="14"/>
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="15"/>-->
-    </com.tarunisrani.magikui.magiklayouts.TreeLayout>
+    </com.tarunisrani.magikui.magiklayouts.CircularLayout>
 </RelativeLayout>

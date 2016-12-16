@@ -3,16 +3,16 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.dcendents.android-maven'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 19
     buildToolsVersion "23.0.2"
-    group = 'com.tarunisrani.magikui.magiklayouts' // Change this to match your package name
-    version = '1.0.1' // Change this to match your version number
+    group = 'com.tarunisrani.magikui' // Change this to match your package name
+    version = '1.0.2' // Change this to match your version number
 
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
-        versionName "1.0"
+        versionName "2.0"
     }
     buildTypes {
         release {
@@ -25,7 +25,7 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:23.4.0'
+    //compile 'com.android.support:appcompat-v7:23.4.0'
 
 }
 
@@ -60,10 +60,10 @@ bintray {
         name = 'com.tarunisrani.magikui'
 
         version {
-            name = '1.0.1'
+            name = '1.0.2'
             desc = 'MagikUI'
             released  = new Date()
-            vcsTag = '1.0.1'
+            vcsTag = '1.0.2'
         }
 
         licenses = ['Apache-2.0']
