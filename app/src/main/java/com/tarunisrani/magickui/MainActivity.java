@@ -6,11 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.tarunisrani.magikui.magiklayouts.TreeLayout;
+import com.tarunisrani.magikui.magiklayouts.CircularLayout;
 
 public class MainActivity extends AppCompatActivity {
 
-    TreeLayout Layout;
     int counter = 8;
 
     @Override
@@ -18,8 +17,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Layout = (TreeLayout) findViewById(R.id.testLayout);
-//        Layout.setlType(CircularLayout.Layout_Type.FOURTH_QUARTER);
+        CircularLayout Layout = (CircularLayout) findViewById(R.id.testLayout);
 
         Button centerBtn = (Button) findViewById(R.id.centerButton);
         if(centerBtn!=null){
@@ -32,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
 //                    btnlp.height = 100;
                     btn.setLayoutParams(btnlp);
                     btn.setText(String.valueOf(counter++));
-                    Layout.addView(btn);
-                    Layout.requestLayout();
                 }
             });
         }

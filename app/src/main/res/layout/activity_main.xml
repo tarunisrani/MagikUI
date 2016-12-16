@@ -9,6 +9,7 @@
     <com.tarunisrani.magikui.magiklayouts.TreeLayout
         android:id="@+id/testLayout"
         android:orientation="vertical"
+        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
@@ -48,15 +49,6 @@
             android:layout_height="45dp"
             android:gravity="center"
             android:text="8"/>
-        <Button
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:gravity="center"
-            android:text="9"/>
-        <Button
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:gravity="center"
-            android:text="10"/>
+
     </com.tarunisrani.magikui.magiklayouts.TreeLayout>
 </RelativeLayout>

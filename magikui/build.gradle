@@ -60,10 +60,10 @@ bintray {
         name = 'com.tarunisrani.magikui'
 
         version {
-            name = '1.0.1'
+            name = '1.0.0'
             desc = 'MagikUI'
             released  = new Date()
-            vcsTag = '1.0.1'
+            vcsTag = '1.0.0'
         }
 
         licenses = ['Apache-2.0']
